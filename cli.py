@@ -41,7 +41,7 @@ def add_parse_args(parser: argparse.ArgumentParser):
     train_parser.add_argument(
         "--output",
         default="./results",
-        help="Directory to save train results"
+        help="Directory to save train results (default: ./results)"
     )
     train_parser.add_argument(
         "--save-dir",
@@ -91,12 +91,10 @@ Examples:
 
     if args.command == "train":
         print(f"Start of training...")
-        print(f"  Model: {SentimentClassifier.model_name()}")
         print(f"  Epochs: {args.epochs}")
         print(f"  Freeze BERT: {args.freeze_bert}")
 
         model, tokenizer = train_model(
-            model_name=SentimentClassifier.model_name(),
             output_dir=args.output,
             save_dir=args.save_dir,
             num_epochs=args.epochs,
