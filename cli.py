@@ -128,7 +128,7 @@ Examples:
             4: "Positive",
             5: "Very positive"
         }
-        sentiment = sentiment_map.get(rating, "Unknown")
+        sentiment = sentiment_map.get(rating[0], "Unknown")
 
         print(f"\nAnalysis result:")
         print(f"  Text: {args.text[:100]}{'...' if len(args.text) > 100 else ''}")

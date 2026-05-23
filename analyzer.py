@@ -200,4 +200,4 @@ def predict_sentiment(text: str, model: SentimentClassifier, tokenizer, device: 
         outputs = model(**inputs)
 
     max_prob_index = torch.argmax(outputs.logits)
-    return (max_prob_index, F.softmax(outputs.logits)[0][max_prob_index])
+    return (max_prob_index.item(), F.softmax(outputs.logits)[0][max_prob_index])
