@@ -132,7 +132,7 @@ Examples:
 
         print(f"\nAnalysis result:")
         print(f"  Text: {args.text[:100]}{'...' if len(args.text) > 100 else ''}")
-        print(f"  Predicted rating: {rating}/5")
+        print(f"  Predicted rating: {rating[0]}/5, confidence: {(rating[1] * 100):.2f}%")
         print(f"  Sentiment: {sentiment}")
 
     else:

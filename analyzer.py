@@ -1,6 +1,7 @@
 import torch
 
 import torch.nn as nn
+import torch.nn.functional as F
 import numpy as np
 
 
@@ -38,22 +39,6 @@ class SentimentConfig(PreTrainedConfig):
         self.dropout = dropout
         self.freeze_bert = freeze_bert
         self.class_weights = class_weights  # stored as plain list, JSON-serialisable
-
-class SentimentHead(nn.Module):
-    """Simple classifier head."""
-
-    def __init__(self, input_dim=312, hidden_dim=256, num_classes=6, dropout=0.2):
-        super().__init__()
-
-        self.net = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Dropout(dropout),
-            nn.Linear(hidden_dim, num_classes)
-        )
-
-    def forward(self, x):
-        return self.net(x)
 
 class SentimentClassifier(PreTrainedModel):
     """Combined model: RuBERT + classifier."""
@@ -204,7 +189,7 @@ def load_sentiment_classifier(save_dir: str, map_location: str = "cpu") -> Senti
     return model
 
 
-def predict_sentiment(text: str, model: SentimentClassifier, tokenizer, device: str = "cpu") -> int:
+def predict_sentiment(text: str, model: SentimentClassifier, tokenizer, device: str = "cpu") -> tuple[int, float]:
     model.eval()
     model.to(device)
 
@@ -214,4 +199,5 @@ def predict_sentiment(text: str, model: SentimentClassifier, tokenizer, device: 
     with torch.no_grad():
         outputs = model(**inputs)
 
-    return torch.argmax(outputs.logits, dim=-1).item()
+    max_prob_index = torch.argmax(outputs.logits)
+    return (max_prob_index, F.softmax(outputs.logits)[0][max_prob_index])
